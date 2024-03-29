@@ -1,4 +1,3 @@
-cat main.py
 # -*- coding: utf-8 -*-
 # ----------------------------------------------- #
 # Plugin Name           : TradingView-Webhook-Bot #
