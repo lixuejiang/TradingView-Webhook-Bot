@@ -17,20 +17,25 @@ import config
 
 
 def send_alert(data):
-    msg = data["msg"].encode("latin-1", "backslashreplace").decode("unicode_escape")
     if config.send_telegram_alerts:
         tg_bot = Bot(token=config.tg_token)
         try:
             tg_bot.sendMessage(
                 data["telegram"],
-                msg,
-                parse_mode="MARKDOWN",
+                data["msg"]
+                .encode("latin-1", "backslashreplace")
+                .decode("unicode_escape"),
+                parse_mode="Markdown",
+                disable_notification=False,
             )
         except KeyError:
             tg_bot.sendMessage(
                 config.channel,
-                msg,
-                parse_mode="MARKDOWN",
+                data["msg"]
+                .encode("latin-1", "backslashreplace")
+                .decode("unicode_escape"),
+                parse_mode="Markdown",
+                disable_notification=False,
             )
         except Exception as e:
             print("[X] Telegram Error:\n>", e)
@@ -40,14 +45,14 @@ def send_alert(data):
             webhook = DiscordWebhook(
                 url="https://discord.com/api/webhooks/" + data["discord"]
             )
-            embed = DiscordEmbed(title=msg)
+            embed = DiscordEmbed(title=data["msg"])
             webhook.add_embed(embed)
             webhook.execute()
         except KeyError:
             webhook = DiscordWebhook(
                 url="https://discord.com/api/webhooks/" + config.discord_webhook
             )
-            embed = DiscordEmbed(title=msg)
+            embed = DiscordEmbed(title=data["msg"])
             webhook.add_embed(embed)
             webhook.execute()
         except Exception as e:
@@ -56,12 +61,12 @@ def send_alert(data):
     if config.send_slack_alerts:
         try:
             slack = Slack(url="https://hooks.slack.com/services/" + data["slack"])
-            slack.post(text=msg)
+            slack.post(text=data["msg"])
         except KeyError:
             slack = Slack(
                 url="https://hooks.slack.com/services/" + config.slack_webhook
             )
-            slack.post(text=msg)
+            slack.post(text=data["msg"])
         except Exception as e:
             print("[X] Slack Error:\n>", e)
 
@@ -71,7 +76,7 @@ def send_alert(data):
         tw_api = tweepy.API(tw_auth)
         try:
             tw_api.update_status(
-                status=msg.replace("*", "").replace("_", "").replace("`", "")
+                status=data["msg"].replace("*", "").replace("_", "").replace("`", "")
             )
         except Exception as e:
             print("[X] Twitter Error:\n>", e)
@@ -79,7 +84,7 @@ def send_alert(data):
     if config.send_email_alerts:
         try:
             email_msg = MIMEText(
-                msg.replace("*", "").replace("_", "").replace("`", "")
+                data["msg"].replace("*", "").replace("_", "").replace("`", "")
             )
             email_msg["Subject"] = config.email_subject
             email_msg["From"] = config.email_sender
