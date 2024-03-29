@@ -10,13 +10,13 @@
 # }
 
 sec_key = (
-    ""  # Can be anything. Has to match with "key" in your TradingView alert message
+    "xiabing-bot"  # Can be anything. Has to match with "key" in your TradingView alert message
 )
 
 # Telegram Settings
-send_telegram_alerts = False
-tg_token = ""  # Bot token. Get it from @Botfather
-channel = 0  # Channel ID (ex. -1001487568087)
+send_telegram_alerts = True
+tg_token = "1720615925:AAGAaMoT0ZO21c77rUUTHabWDw2fUzYNXcc"  # Bot token. Get it from @Botfather
+channel = "-1001442727075"  # Channel ID (ex. -1001487568087)
 
 # Discord Settings
 send_discord_alerts = False
