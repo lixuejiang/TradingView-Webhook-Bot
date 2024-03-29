@@ -1,3 +1,5 @@
+cat main.py
+# -*- coding: utf-8 -*-
 # ----------------------------------------------- #
 # Plugin Name           : TradingView-Webhook-Bot #
 # Author Name           : fabston                 #
@@ -24,8 +26,19 @@ def get_timestamp():
 def webhook():
     try:
         if request.method == "POST":
-            data = request.get_json()
+            result = request.data.decode("utf-8")
+            print(request.data)
+            print(type(result))
+            if result.find("telegram") != -1:
+                data = request.get_json()
+            else:
+                data = {
+                    "key": "xiabing-bot",
+                    "telegram": -1001442727075,
+                    "msg": result
+                }
             key = data["key"]
+
             if key == config.sec_key:
                 print(get_timestamp(), "Alert Received & Sent!")
                 send_alert(data)
@@ -43,4 +56,4 @@ def webhook():
 if __name__ == "__main__":
     from waitress import serve
 
-    serve(app, host="0.0.0.0", port=80)
+    serve(app, host="0.0.0.0", port=8081)
